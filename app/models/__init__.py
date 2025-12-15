@@ -1,0 +1,6 @@
+from app.models.user import User
+from app.models.application import Application, ApplicationStatus
+from app.models.resume import Resume
+
+__all__ = ["User", "Application", "ApplicationStatus", "Resume"]
+#python -c "from app.models import User, Application, Resume; print('✅ Models imported successfully!')"
