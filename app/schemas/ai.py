@@ -1,26 +1,22 @@
-from sqlalchemy import Column, Integer, ForeignKey, Text, DateTime
-from sqlalchemy.sql import func
-from sqlalchemy.orm import relationship
-
-from app.core.database import Base
+from pydantic import BaseModel
+from datetime import datetime
 
 
-class AIMatch(Base):
-    __tablename__ = "ai_matches"
+class AIMatchCreate(BaseModel):
+    application_id: int
+    resume_id: int
 
-    id = Column(Integer, primary_key=True, index=True)
 
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    application_id = Column(Integer, ForeignKey("applications.id"), nullable=False)
-    resume_id = Column(Integer, ForeignKey("resumes.id"), nullable=False)
+class AIMatchOut(BaseModel):
+    id: int
+    user_id: int
+    application_id: int
+    resume_id: int
+    match_score: int
+    strengths: str | None
+    missing_skills: str | None
+    recommendation: str | None
+    created_at: datetime
 
-    match_score = Column(Integer, nullable=False)
-    strengths = Column(Text, nullable=True)
-    missing_skills = Column(Text, nullable=True)
-    recommendation = Column(Text, nullable=True)
-
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-
-    user = relationship("User")
-    application = relationship("Application")
-    resume = relationship("Resume")
+    class Config:
+        from_attributes = True

@@ -72,12 +72,15 @@ def test_database():
 # -------------------------
 # ROUTERS
 # -------------------------
-from app.api import auth, applications, resumes, users
+from app.api import auth, applications, resumes, users, ai
+
 
 app.include_router(auth.router, prefix="/api", tags=["Authentication"])
 app.include_router(applications.router, prefix="/api", tags=["Applications"])
 app.include_router(resumes.router, prefix="/api", tags=["Resumes"])
 app.include_router(users.router, prefix="/api", tags=["Users"])
+app.include_router(ai.router)
+
 
 # -------------------------
 # CUSTOM OPENAPI (HTTP BEARER)

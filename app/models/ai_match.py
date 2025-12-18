@@ -15,9 +15,9 @@ class AIMatch(Base):
     resume_id = Column(Integer, ForeignKey("resumes.id"), nullable=False)
 
     match_score = Column(Integer, nullable=False)
-    strengths = Column(Text, nullable=True)
-    missing_skills = Column(Text, nullable=True)
-    recommendation = Column(Text, nullable=True)
+    strengths = Column(Text)
+    missing_skills = Column(Text)
+    recommendation = Column(Text)
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
