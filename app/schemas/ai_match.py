@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
+from typing import List
 
 
 class AIMatchCreate(BaseModel):
@@ -9,13 +10,12 @@ class AIMatchCreate(BaseModel):
 
 class AIMatchOut(BaseModel):
     id: int
-    user_id: int
     application_id: int
     resume_id: int
     match_score: int
-    strengths: str | None
-    missing_skills: str | None
-    recommendation: str | None
+    strengths: List[str]
+    missing_skills: List[str]
+    recommendation: str
     created_at: datetime
 
     class Config:

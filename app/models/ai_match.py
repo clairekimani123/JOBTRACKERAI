@@ -1,7 +1,5 @@
-from sqlalchemy import Column, Integer, ForeignKey, Text, DateTime
-from sqlalchemy.sql import func
-from sqlalchemy.orm import relationship
-
+from sqlalchemy import Column, Integer, ForeignKey, DateTime, JSON
+from datetime import datetime
 from app.core.database import Base
 
 
@@ -15,12 +13,8 @@ class AIMatch(Base):
     resume_id = Column(Integer, ForeignKey("resumes.id"), nullable=False)
 
     match_score = Column(Integer, nullable=False)
-    strengths = Column(Text)
-    missing_skills = Column(Text)
-    recommendation = Column(Text)
+    strengths = Column(JSON, nullable=False)
+    missing_skills = Column(JSON, nullable=False)
+    recommendation = Column(JSON, nullable=False)
 
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-
-    user = relationship("User")
-    application = relationship("Application")
-    resume = relationship("Resume")
+    created_at = Column(DateTime, default=datetime.utcnow)
