@@ -8,7 +8,7 @@ from app.models.application import Application
 from app.models.resume import Resume
 from app.models.ai_match import AIMatch
 from app.services.ai_service import run_resume_match
-
+ 
 router = APIRouter(prefix="/ai", tags=["AI"])
 
 
@@ -39,11 +39,13 @@ def ai_match(
         raise HTTPException(status_code=404, detail="Resume not found")
 
     # 3️⃣ Validate extracted text
-    if not resume.extracted_text or len(resume.extracted_text) < 300:
+    if not resume.extracted_text or len(resume.extracted_text) < 100:
         raise HTTPException(
             status_code=400,
             detail="Resume text extraction failed or is too short"
+            
         )
+
 
     if not application.job_description:
         raise HTTPException(
@@ -72,4 +74,17 @@ def ai_match(
     db.commit()
     db.refresh(match)
 
-    return match
+ 
+    import json
+    return {
+        "id": match.id,
+        "application_id": match.application_id,
+        "resume_id": match.resume_id,
+        "match_score": match.match_score,
+        "strengths": json.loads(match.strengths),
+        "missing_skills": json.loads(match.missing_skills),
+        "recommendation": json.loads(match.recommendation),
+        "created_at": match.created_at,
+    }
+
+    

@@ -79,7 +79,8 @@ app.include_router(auth.router, prefix="/api", tags=["Authentication"])
 app.include_router(applications.router, prefix="/api", tags=["Applications"])
 app.include_router(resumes.router, prefix="/api", tags=["Resumes"])
 app.include_router(users.router, prefix="/api", tags=["Users"])
-app.include_router(ai.router)
+app.include_router(ai.router, prefix="/api", tags=["AI"])
+
 
 
 # -------------------------

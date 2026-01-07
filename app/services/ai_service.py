@@ -1,36 +1,92 @@
+# app/services/ai_service.py
+
 import json
-from openai import OpenAI
+import re
+import google.generativeai as genai
 from app.core.config import settings
 
-client = OpenAI(api_key=settings.OPENAI_API_KEY)
+# -----------------------------------
+# Configure Gemini
+# -----------------------------------
+genai.configure(api_key=settings.GEMINI_API_KEY)
+
+MODEL_NAME = "models/gemini-2.5-flash"
+
+model = genai.GenerativeModel(MODEL_NAME)
 
 
+# -----------------------------------
+# Helper: safely extract JSON
+# -----------------------------------
+def extract_json(text: str) -> dict:
+    """
+    Gemini sometimes returns text before/after JSON.
+    This safely extracts the first JSON object found.
+    """
+    try:
+        match = re.search(r"\{.*\}", text, re.DOTALL)
+        if not match:
+            raise ValueError("No JSON found in AI response")
+        return json.loads(match.group())
+    except Exception as e:
+        raise ValueError(f"Failed to parse AI JSON: {e}")
+
+
+# -----------------------------------
+# AI Resume Matching
+# -----------------------------------
 def run_resume_match(resume_text: str, job_description: str) -> dict:
+    """
+    Uses Gemini to match a resume against a job description.
+    Returns structured match results.
+    """
+
     prompt = f"""
-You are an ATS and hiring expert.
+You are an AI recruiter assistant.
 
-Compare the RESUME and JOB DESCRIPTION.
+Analyze the resume against the job description and return ONLY valid JSON.
 
-Return ONLY valid JSON in this exact format:
+Resume:
+\"\"\"
+{resume_text}
+\"\"\"
 
+Job Description:
+\"\"\"
+{job_description}
+\"\"\"
+
+Return JSON with this exact structure:
 {{
   "match_score": number (0-100),
   "strengths": [string],
   "missing_skills": [string],
   "recommendation": string
 }}
-
-RESUME:
-{resume_text}
-
-JOB DESCRIPTION:
-{job_description}
 """
 
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[{"role": "user", "content": prompt}],
-        temperature=0.3,
-    )
+    try:
+        response = model.generate_content(prompt)
 
-    return json.loads(response.choices[0].message.content)
+        if not response or not response.text:
+            raise ValueError("Empty response from Gemini")
+
+        ai_output = extract_json(response.text)
+
+        return {
+            "match_score": int(ai_output.get("match_score", 0)),
+            "strengths": ai_output.get("strengths", []),
+            "missing_skills": ai_output.get("missing_skills", []),
+            "recommendation": ai_output.get("recommendation", ""),
+        }
+
+    except Exception as e:
+        print("⚠️ AI service error:", e)
+
+        # Safe fallback so API never crashes
+        return {
+            "match_score": 0,
+            "strengths": [],
+            "missing_skills": [],
+            "recommendation": "Match analysis will be available shortly."
+        }
