@@ -281,5 +281,3 @@ Response body
 ✔ Job application tracking
 ✔ AI pipeline wired end-to-end
 ✔ Production-ready architecture
-
-The backend is 90% complete, with only AI model selection remaining.
