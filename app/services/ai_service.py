@@ -10,7 +10,8 @@ from app.core.config import settings
 # -----------------------------------
 genai.configure(api_key=settings.GEMINI_API_KEY)
 
-MODEL_NAME = "models/gemini-2.5-flash"
+
+MODEL_NAME = "models/gemini-1.5-flash"
 
 model = genai.GenerativeModel(MODEL_NAME)
 
@@ -81,12 +82,10 @@ Return JSON with this exact structure:
         }
 
     except Exception as e:
-        print("⚠️ AI service error:", e)
-
-        # Safe fallback so API never crashes
-        return {
-            "match_score": 0,
-            "strengths": [],
-            "missing_skills": [],
-            "recommendation": "Match analysis will be available shortly."
-        }
+        print(f"⚠️ AI service error: {type(e).__name__}: {e}")
+    return {
+        "match_score": 0,
+        "strengths": [],
+        "missing_skills": [],
+        "recommendation": f"AI error: {str(e)}"
+    }
