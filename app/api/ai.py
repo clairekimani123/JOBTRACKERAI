@@ -11,11 +11,6 @@ from app.services.ai_service import run_resume_match
 
 router = APIRouter(prefix="/ai", tags=["AI"])
 
-def _parse(val):
-    if isinstance(val, (list, dict)):
-        return val
-    return json.loads(val)
-
 @router.post("/match", response_model=AIMatchOut)
 def ai_match(
     payload: AIMatchCreate,
@@ -69,8 +64,8 @@ def ai_match(
         "application_id": match.application_id,
         "resume_id": match.resume_id,
         "match_score": match.match_score,
-        "strengths": _parse(match.strengths),
-        "missing_skills": _parse(match.missing_skills),
-        "recommendation": _parse(match.recommendation),
+        "strengths": match.strengths,
+        "missing_skills": match.missing_skills,
+        "recommendation": match.recommendation,
         "created_at": match.created_at,
     }
