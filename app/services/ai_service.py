@@ -5,7 +5,7 @@ from app.core.config import settings
 
 genai.configure(api_key=settings.GEMINI_API_KEY)
 
-MODEL_NAME = "models/gemini-2.0-flash"
+MODEL_NAME = "models/gemini-2.0-flash-lite"
 model = genai.GenerativeModel(MODEL_NAME)
 
 
