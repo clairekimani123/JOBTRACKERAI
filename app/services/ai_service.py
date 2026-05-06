@@ -8,6 +8,7 @@ genai.configure(api_key=settings.GEMINI_API_KEY)
 MODEL_NAME = "models/gemini-1.5-flash"
 model = genai.GenerativeModel(MODEL_NAME)
 
+
 def extract_json(text: str) -> dict:
     try:
         match = re.search(r"\{.*\}", text, re.DOTALL)
@@ -17,26 +18,20 @@ def extract_json(text: str) -> dict:
     except Exception as e:
         raise ValueError(f"Failed to parse AI JSON: {e}")
 
+
 def run_resume_match(resume_text: str, job_description: str) -> dict:
-    prompt = f"""
-You are an AI recruiter assistant.
-Analyze the resume against the job description and return ONLY valid JSON.
+    prompt = (
+        "You are an AI recruiter assistant.\n"
+        "Analyze the resume against the job description and return ONLY valid JSON.\n\n"
+        f"Resume:\n{resume_text}\n\n"
+        f"Job Description:\n{job_description}\n\n"
+        "Return JSON with this exact structure:\n"
+        '{"match_score": number between 0 and 100, '
+        '"strengths": [list of strings], '
+        '"missing_skills": [list of strings], '
+        '"recommendation": "string"}'
+    )
 
-Resume:
-"""{resume_text}"""
-
-Job Description:
-"""{job_description}"""
-
-Return JSON with this exact structure:
-{{
-  "match_score": number between 0 and 100,
-  "strengths": [list of strings],
-  "missing_skills": [list of strings],
-  "recommendation": "string"
-}}
-"""
-    error_msg = "Unknown error"
     try:
         response = model.generate_content(prompt)
         if not response or not response.text:
