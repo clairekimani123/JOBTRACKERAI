@@ -20,10 +20,9 @@ from app.services.pdf_extractor import extract_text_from_pdf
 router = APIRouter(prefix="/resumes", tags=["Resumes"])
 
 
-UPLOAD_DIR = "uploads/resumes"
+UPLOAD_DIR = "/tmp/uploads/resumes"
 
 os.makedirs(UPLOAD_DIR, exist_ok=True)
-
 
 @router.post("/upload", response_model=ResumeOut)
 

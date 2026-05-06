@@ -35,6 +35,9 @@ app.add_middleware(
 @app.on_event("startup")
 async def startup_event():
     try:
+        import os
+        os.makedirs("/tmp/uploads/resumes", exist_ok=True)
+        
         from app.core.database import engine, Base
         from app.models import User, Application, Resume
 
@@ -42,7 +45,6 @@ async def startup_event():
         print("✅ Database tables created successfully!")
     except Exception as e:
         print(f"⚠️ Database initialization error: {e}")
-
 # -------------------------
 # ROOT & HEALTH
 # -------------------------
