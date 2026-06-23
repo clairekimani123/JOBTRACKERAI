@@ -4,7 +4,7 @@ from datetime import datetime
 from app.core.database import Base
 
 class User(Base):
-    __tablename__ = "users"
+    __tablename__ = "jobtracker_users"
     
     # Primary Key - MUST HAVE THIS!
     id = Column(Integer, primary_key=True, index=True)

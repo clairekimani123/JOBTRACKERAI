@@ -8,7 +8,7 @@ class AIMatch(Base):
 
     id = Column(Integer, primary_key=True, index=True)
 
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("jobtracker_users.id"), nullable=False)
     application_id = Column(Integer, ForeignKey("applications.id"), nullable=False)
     resume_id = Column(Integer, ForeignKey("resumes.id"), nullable=False)
 

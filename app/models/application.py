@@ -19,7 +19,7 @@ class Application(Base):
     id = Column(Integer, primary_key=True, index=True)
     
     # Foreign Key (links to User table)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("jobtracker_users.id"), nullable=False)
     
     # Application fields
     company_name = Column(String, nullable=False)
